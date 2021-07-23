@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="AngularD3App">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=10">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>AngularJs | D3.JS</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/d3chart.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+  </head>
+  <body ng-cloak>
+    <!-- Show this error if JavaSCript, jQuery and AngularJS is disabled -->
+    <div id="hideIfJS" style="text-align:center;"><br><br><br><br><br><br>
+      <h4>
+        <strong>Error: </strong> Looks like either the JavaScript is disabled in your browser or you don't have access to external JavaScript Libraries.<br><br>
+      </h4>
+      <h5>
+        Please Contact your System Administrator to enable access to JavaScript External.
+      <h5>
+      <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    </div>
+    <!-- Hide all if JavaSCript, jQuery and AngularJS is disabled -->
+    <div id="hideIfNoJS" class="hidden">
+      <div ng-controller="D3ChartController">
+        <div class="container-fluid" ng-init="drawD3Chart()">
+          <div class="row">
+            <h2 class="text-center text-success" style="margin-bottom : 0px;">
+              Angular D3.Js Charts Demo <br> <br>
+            </h2>
+            <div class="col-md-offset-1 col-md-10 col-sm-12"> <br>
+              <!-- <h2 class="text-success">Sales</h2> -->
+              <table class="table table-hover table-condensed table-striped">
+                <thead>
+                  <tr>
+                    <th colspan="4">
+                      <form role="form" ng-submit="addSalesMan()" class="form-horizontal">
+                        <div class="row">
+                          <div class="form-group">
+                            <label for="salesMan" class="col-sm-2 control-label">Sales Person : </label>
+                            <div class="col-sm-7">
+                              <input type="text" ng-model="salesMan.name" placeholder="Add a Sales Person" class="form-control">
+                            </div>
+                            <div class="col-sm-3">
+                              <input type="submit" class="btn btn-success btn-block" value="Add">
+                            </div>
+                          </div>
+                        </div>
+                      </form>                      
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="salesMan in salesPersons" id="table-data">
+                    <td>
+                      <input type="text" ng-model="salesMan.name" class="form-control">
+                    </td>
+                    <td>
+                      <div class="panel panel-warning">
+                        <div class="panel-heading" ng-click="isCollapsed = !isCollapsed" style="cursor: pointer;">
+                          {{salesMan.name}} 
+
+                          <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': !isCollapsed, 'glyphicon-chevron-right': isCollapsed}"></i>
+                          
+                        </div>
+                        <div class="panel-body reduce-padding" uib-collapse="isCollapsed">
+                        <table class="table table-hover table-condensed table-striped table-css">
+                        <thead>
+                          <tr>
+                            <th style="width:30px!important"> Brand </th> 
+                            <th style="width:60px!important"> </th> 
+                            <th> Items Sold </th>
+                          </tr>
+                        </thead>
+                          <tbody>
+                            <tr ng-repeat="item in salesMan.saleByBrand">
+                              <td style="width:30px!important">
+                                <label class="text-left"> {{item.brand}} </label>
+                              </td>
+                              <td style="width:60px!important"> : </td>
+                              <td>
+                                <strong ng-hide="showEdit"> {{item.quantity}} </strong>
+                                <div class="form-group">
+                                  <input type="text" ng-model="sales.updated[$index]" placeholder="{{item.quantity}}" class="form-control" ng-show="showEdit">
+                                </div>
+                                
+                              </td>
+                            </tr>                             
+                          </tbody>
+                        </table>
+                        <button type="button" class="btn btn-info btn-block" ng-click="showEdit=true" ng-hide="showEdit">Edit</button>
+                        <button type="button" class="btn btn-success btn-block" ng-click="updateSalesMan($index, sales);showEdit=false;" ng-show="showEdit">Save</button>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <button class="btn btn-warning btn-block" ng-click="drawD3Chart()">Update</button> 
+                      <!-- index : {{$index}} -->
+                    </td>  
+                    <td>
+                      <button class="btn btn-danger btn-block" ng-click="removeSalesMan($index); drawD3Chart()" aria-label="Remove">Delete</button>
+                    </td>                                       
+                  </tr>
+                </tbody>
+              </table>  
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-offset-2 col-lg-6 col-md-offset-1 col-md-10 col-sm-12">
+              <div class="form-group">
+                <div id="charts"></div>
+              </div>
+            </div>
+          </div>  
+        </div>
+      </div>
+    </div> <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <footer class="text-center">
+      <span class="glyphicon glyphicon-copyright-mark"></span> <strong>Sanjay Rawat, 2015.</strong>
+      <em>Source Code available <a href="https://github.com/RawSanj/D3.JS-Angular">here</a> </em>
+    </footer>
+    <!-- JQuery js -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <!-- BootStrap Js -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <!-- D3Js -->
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <!-- JS Libraries for Angulat.UI and Angular-Main-->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular-animate.min.js"></script>    
+    <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.14.3.min.js"></script>
+    <!-- App Js script -->
+    <script src="app.js"></script>
+  </body>
+</html>
